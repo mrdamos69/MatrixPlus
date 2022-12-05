@@ -1,20 +1,15 @@
 #include "S21_matrix_oop.h"
 
-S21Matrix::S21Matrix() {
-    rows = 0;
-    cols = 0;
-    matrix = nullptr;
-}
+S21Matrix::S21Matrix() : rows(0), cols(0), matrix(nullptr) {}
 
 S21Matrix::S21Matrix(int rows, int cols) {
-    this->rows = rows;
-    this->cols = cols;
-    matrix = new double* [rows];
-    for (int i = 0; i < rows; i++)
-        matrix[i] = new double[cols];
-    for (int i = 0; i < rows; i++)
-        for (int j = 0; j < cols; j++)
-            matrix[i][j] = 0;
+    if (rows > 0 && cols > 0) {
+        this->rows = rows;
+        this->cols = cols;
+        matrix = new double* [rows];
+        for (int i = 0; i < rows; i++)
+            matrix[i] = new double[cols]();
+    }
 }
 
 S21Matrix::S21Matrix(const S21Matrix& other) {
@@ -29,10 +24,11 @@ S21Matrix::S21Matrix(const S21Matrix& other) {
 }
 
 S21Matrix::S21Matrix(S21Matrix&& other) {
-    for (int i = 0; i < rows; i++) {
-        delete[] matrix[i];
+    if (matrix != nullptr) {
+        for (int i = 0; i < rows; i++)
+            delete[] matrix[i];
+        delete[] matrix;
     }
-    delete[] matrix;
     *this = other;
     other.matrix = nullptr;
     other.rows = other.cols = 0;
@@ -52,7 +48,7 @@ bool S21Matrix::eq_matrix(const S21Matrix& other) {
     bool flag_status = true;
     if (other.rows != rows || other.cols != cols || other.rows <= 0 ||
         other.cols <= 0 || rows <= 0 || cols <= 0) {
-        flag_status = false;
+        return false;
     } else {
         for (int i = 0; (i < rows) && flag_status; i++)
             for (int j = 0; (j < cols) && flag_status; j++)
@@ -64,7 +60,7 @@ bool S21Matrix::eq_matrix(const S21Matrix& other) {
 void S21Matrix::sum_matrix(const S21Matrix& other) {
     if ((this->rows != other.rows) || (this->cols != other.cols))
         throw "the matrices are not equal!";
-    if ((matrix != nullptr) && (other.matrix != nullptr) && (rows > 0)) {
+    if ((matrix != nullptr) && (other.matrix != nullptr) && (rows > 0) && (cols > 0)) {
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < cols; j++)
                 matrix[i][j] = matrix[i][j] + other.matrix[i][j];
@@ -224,6 +220,14 @@ void S21Matrix::gen_mtx_rev() {
 void S21Matrix::set_rows(int rows) {
     this->rows = rows;
 }
+// void S21Matrix::set_rows(int rows) {
+//     if (rows > 0) {
+//         S21Matrix result(rows, this->cols);
+//         for (int i = 0; (i < rows) && this->rows; i++)
+//             for (int j = 0; j < this->cols; j++)
+//                 result(i, j) = this->matrix[i][j];
+//     }
+// }
 
 int S21Matrix::get_rows() {
     return rows;
@@ -233,56 +237,38 @@ void S21Matrix::set_cols(int cols) {
     this->cols = cols;
 }
 
+// void S21Matrix::set_cols(int cols) {
+//     if (rows > 0) {
+//         S21Matrix result(this->rows, cols);
+//         for (int i = 0; (i < rows) && this->rows; i++)
+//             for (int j = 0; j < this->cols; j++)
+//                 result(i, j) = this->matrix[i][j];
+//     }
+// }
+
 int S21Matrix::get_cols() {
     return cols;
 }
 
 
 S21Matrix S21Matrix :: operator +(const S21Matrix& other) {
-    if ((this->rows != other.rows) || (this->cols != other.cols))
-        throw "the matrices are not equal!";
-    S21Matrix result(this->rows, this->cols);
-    if ((matrix != nullptr) && (other.matrix != nullptr) && (rows > 0)) {
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < cols; j++)
-                result.matrix[i][j] = this->matrix[i][j] + other.matrix[i][j];
-    }
-    return result;
+    this->sum_matrix(other);
+    return *this;
 }
 
 S21Matrix S21Matrix :: operator -(const S21Matrix& other) {
-    if ((this->rows != other.rows) || (this->cols != other.cols))
-        throw "the matrices are not equal!";
-    S21Matrix result(this->rows, this->cols);
-    if ((matrix != nullptr) && (other.matrix != nullptr) && (rows > 0)) {
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < cols; j++)
-                result.matrix[i][j] = this->matrix[i][j] - other.matrix[i][j];
-    }
-    return result;
+    this->sub_matrix(other);
+    return *this;
 }
 
 S21Matrix S21Matrix :: operator *(const double& num) {
-    S21Matrix result(this->rows, this->cols);
-    if ((matrix != nullptr) && (rows > 0)) {
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < cols; j++)
-                result.matrix[i][j] = matrix[i][j] * num;
-    }
-    return result;
+    this->mul_number(num);
+    return *this;
 }
 
 S21Matrix S21Matrix :: operator *(const S21Matrix& other) {
-    if (this->cols != other.rows)
-        throw "columns is not equal to the number!";
-    S21Matrix result(this->rows, other.cols);
-    if ((this->matrix != nullptr) && (other.matrix != nullptr) && (rows > 0) && (cols > 0)) {
-        for (int i = 0; (i < this->rows); i++)
-            for (int j = 0; j < other.cols; j++)
-                for (int k = 0; k < this->cols; k++)
-                    result.matrix[i][j] += this->matrix[i][k] * other.matrix[k][j];
-    }
-    return result;
+    this->mul_matrix(other);
+    return *this;
 }
 
 S21Matrix& S21Matrix :: operator = (const S21Matrix& other) {

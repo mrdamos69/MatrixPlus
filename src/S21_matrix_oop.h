@@ -38,7 +38,6 @@ public:
     void set_cols(int cols);
     int get_cols();
 
-    void print_mtx();
     void gen_mtx();
     void gen_mtx_rev();
 private:

@@ -43,11 +43,15 @@ clean:
 	@rm -f *.gcdo
 	@rm -f *.gcno
 	@rm -f *.info
+	@rm -f RESULT_VALGRIND.txt
 
 style: $(ALL_FILE)
 	@cp ../materials/linters/CPPLINT.cfg ./
 	@python3 ./../materials/linters/cpplint.py --extensions=cpp $(ALL_FILE) unit_test.cpp
 	@rm -f CPPLINT.cfg
+
+leaks: test
+	@CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --tool=memcheck --track-origins=yes --verbose --log-file=RESULT_VALGRIND.txt ./tests.o
 
 cppcheck: $(ALL_FILE_O)
 	@cppcheck --enable=all --suppress=missingIncludeSystem . $(ALL_FILE)
