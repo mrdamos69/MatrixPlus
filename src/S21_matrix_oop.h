@@ -40,6 +40,7 @@ public:
 
     void gen_mtx();
     void gen_mtx_rev();
+
 private:
     int rows;
     int cols;

@@ -341,15 +341,37 @@ TEST(Test, s21_inverse_matrix_test_1) {
     result.set_rows(3);
 }
 
-// TEST(Test, s21_other_test_1) {
-//     S21Matrix mtx(3, 3), result(3, 6);
-//     mtx.set_cols(6);
-//     for (int i = 0; i < result.get_rows(); i++) {
-//         for (int j = 0; j < result.get_cols(); j++) {
-//             EXPECT_EQ(result(i, j), mtx(i, j));
-//         }
-//     }
-// }
+TEST(Test, s21_set_cols_test_1) {
+    S21Matrix mtx(3, 3), result(3, 6);
+    mtx.set_cols(6);
+    for (int i = 0; i < result.get_rows(); i++)
+        for (int j = 0; j < result.get_cols(); j++)
+            EXPECT_EQ(result(i, j), mtx(i, j));
+}
+
+TEST(Test, s21_set_cols_test_2) {
+    S21Matrix mtx(3, 3), result(3, 2);
+    mtx.set_cols(2);
+    for (int i = 0; i < result.get_rows(); i++)
+        for (int j = 0; j < result.get_cols(); j++)
+            EXPECT_EQ(result(i, j), mtx(i, j));
+}
+
+TEST(Test, s21_set_rows_test_1) {
+    S21Matrix mtx(3, 3), result(6, 3);
+    mtx.set_rows(6);
+    for (int i = 0; i < result.get_rows(); i++)
+        for (int j = 0; j < result.get_cols(); j++)
+            EXPECT_EQ(result(i, j), mtx(i, j));
+}
+
+TEST(Test, s21_set_rows_test_2) {
+    S21Matrix mtx(3, 3), result(2, 3);
+    mtx.set_rows(2);
+    for (int i = 0; i < result.get_rows(); i++)
+        for (int j = 0; j < result.get_cols(); j++)
+            EXPECT_EQ(result(i, j), mtx(i, j));
+}
 
 int main(int argc, char *argv[]) {
     testing::InitGoogleTest(&argc, argv);

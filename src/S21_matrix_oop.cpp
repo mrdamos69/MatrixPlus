@@ -218,33 +218,28 @@ void S21Matrix::gen_mtx_rev() {
 }
 
 void S21Matrix::set_rows(int rows) {
-    this->rows = rows;
+    if (rows > 0 && rows != this->rows) {
+        S21Matrix result(rows, this->cols);
+        for (int i = 0; (i < rows) && (i < this->rows); i++)
+            for (int j = 0; j < this->cols; j++)
+                result(i, j) = this->matrix[i][j];
+        *this = result;
+    }
 }
-// void S21Matrix::set_rows(int rows) {
-//     if (rows > 0) {
-//         S21Matrix result(rows, this->cols);
-//         for (int i = 0; (i < rows) && this->rows; i++)
-//             for (int j = 0; j < this->cols; j++)
-//                 result(i, j) = this->matrix[i][j];
-//     }
-// }
 
 int S21Matrix::get_rows() {
     return rows;
 }
 
 void S21Matrix::set_cols(int cols) {
-    this->cols = cols;
+    if (cols > 0 && cols != this->cols) {
+        S21Matrix result(this->rows, cols);
+        for (int i = 0; i < this->rows; i++)
+            for (int j = 0; (j < cols) && (j < this->cols); j++)
+                result(i, j) = this->matrix[i][j];
+        *this = result;
+    }
 }
-
-// void S21Matrix::set_cols(int cols) {
-//     if (rows > 0) {
-//         S21Matrix result(this->rows, cols);
-//         for (int i = 0; (i < rows) && this->rows; i++)
-//             for (int j = 0; j < this->cols; j++)
-//                 result(i, j) = this->matrix[i][j];
-//     }
-// }
 
 int S21Matrix::get_cols() {
     return cols;
