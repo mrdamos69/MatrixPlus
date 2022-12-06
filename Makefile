@@ -14,11 +14,6 @@ else
 endif
 
 all: clean $(PR_NAME).a
-# all: clean temp_test
-
-temp_test:
-	@$(CC) $(PR_NAME).cpp 
-	@./a.out
 
 $(PR_NAME).a:
 	@$(CC) $(FLAG_C) $(ALL_FILE) 
